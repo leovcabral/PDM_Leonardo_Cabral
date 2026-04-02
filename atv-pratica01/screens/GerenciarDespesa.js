@@ -1,96 +1,88 @@
-import { StyleSheet } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import DespesaRecentes from './screens/DespesaRecentes';
-import TodasDespesas from './screens/TodasDespesas';
-import IconButton from './components/IconButton';
-import { GlobalStyles } from './constants/styles';
+function GerenciarDespesa() {
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+  const [data, setData] = useState('');
+  const [valor, setValor] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [showPicker, setShowPicker] = useState(false);
 
-function BottonTabScreen() {
+  const handleChangeValor = (text) => {
+    const cleanText = text.replace(',', '.');
+    const match = cleanText.match(/^\d*\.?\d{0,2}$/);
+
+    if (match) {
+      setValor(cleanText);
+    }
+  };
+
+  const onChange = (event, selectedDate) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      setData(selectedDate);
+    }
+  };
+
   return (
-    <Tab.Navigator
-      screenOptions={({ navigation }) => ({
-        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
-        headerTintColor: 'white',
-        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
-        tabBarActiveTintColor: GlobalStyles.colors.accent500,
-        headerRight: ({ tintColor }) => (
-          <IconButton
-            icon="add"
-            size={24}
-            color={tintColor}
-            onPress={() => {
-              navigation.navigate('GerenciarDespesa');
-            }}
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Descrição</Text>
+        <TextInput
+          style={styles.input}
+          maxLength={20}
+          value={descricao}
+          onChangeText={setDescricao}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Valor da Despesa</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType={'decimal-pad'}
+          maxLength={10}
+          value={valor}
+          onChangeText={handleChangeValor}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Data da Despesa</Text>
+        <Pressable onPress={() => setShowPicker(true)} style={styles.input}>
+          <Text>{data ? data.toLocaleDateString('pt-BR') : ''}</Text>
+        </Pressable>
+        {showPicker && (
+          <DateTimePicker
+            value={data || new Date()}
+            mode="date"
+            display="default"
+            onChange={onChange}
           />
-        ),
-      })}
-    >
-      <Tab.Screen
-        name="DespesasRecentes"
-        component={DespesaRecentes}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="hourglass" size={size} color={color} />
-          ),
-          tabBarLabel: 'Recentes',
-          title: 'Despesas Recentes',
-          tabBarLabelStyle: { fontSize: 12 },
-        }}
-      />
-      <Tab.Screen
-        name="TodasDespesas"
-        component={TodasDespesas}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="wallet-outline" size={size} color={color} />
-          ),
-          tabBarLabel: 'Todas',
-          title: 'Todas as Despesas',
-          tabBarLabelStyle: { fontSize: 12 },
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+        )}
+      </View>
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
-          headerTintColor: 'white',
-        }}
-      >
-        <Stack.Screen
-          name="Despesas"
-          component={BottonTabScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="GerenciarDespesa"
-          component={GerenciarDespesa}
-          options={{
-            presentation: 'modal',
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 20,
+  },
+  inputContainer: {
+    marginHorizontal: 4,
+    marginVertical: 16,
+  },
+  label: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
   },
 });
+
+export default GerenciarDespesa;
