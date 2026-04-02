@@ -1,27 +1,26 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
 import GerenciarDespesa from './screens/GerenciarDespesa';
 import DespesaRecentes from './screens/DespesaRecentes';
 import TodasDespesas from './screens/TodasDespesas';
 import { Ionicons } from '@expo/vector-icons';
-
-export default function App() {
+import IconButton from './components/IconButton';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function BottonTabScreen(){
-  const navigation = useNavigation();
-
   return (
-    <Tab.Navigator 
-      screenOptions={({ navigation }) => ({ headerRight: () => <IconButton 
+    <Tab.Navigator
+      screenOptions={({ navigation }) => ({ headerRight: () => <IconButton
       icon="add" size={24} onPress={() => {
         navigation.navigate('GerenciarDespesa')
-      }} /> })} >
+      }} /> })}>
 
-      <Tab.Screen name="DespesasRecentes" component={DespesasRecentes}
+      <Tab.Screen name="DespesaRecentes" component={DespesaRecentes}
         options={{tabBarIcon: ({color, size}) => (<Ionicons name="hourglass"
         size={size} color={color} />),
         tabBarLabel: 'Recentes',
@@ -41,18 +40,20 @@ function BottonTabScreen(){
   )
 }
 
-const Stack = createNativeStackNavigator();
+export default function App() {
   return (
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen name="Despesas" component={BottonTabScreen} 
-          options={{headerShown:false}}/>
-      <Stack.Screen name="GerenciarDespesa" component={GerenciarDespesa} />
-    </Stack.Navigator>
-  </NavigationContainer>
-  );}
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Despesas" component={BottonTabScreen}
+          options={{headerShown: false}}/>
+        <Stack.Screen name="GerenciarDespesa" component={GerenciarDespesa} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
-const styles = StyleSheet.create({ container: {
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
