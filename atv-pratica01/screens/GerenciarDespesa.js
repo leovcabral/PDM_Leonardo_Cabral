@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-import GerenciarDespesa from './screens/GerenciarDespesa';
 import DespesaRecentes from './screens/DespesaRecentes';
 import TodasDespesas from './screens/TodasDespesas';
 import IconButton from './components/IconButton';
